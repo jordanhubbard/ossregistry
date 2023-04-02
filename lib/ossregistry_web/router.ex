@@ -18,7 +18,9 @@ defmodule OssregistryWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-  end
+    get "/hello", HelloController, :index
+    get "/hello/:messenger", HelloController, :show
+end
 
   # Other scopes may use custom stacks.
   # scope "/api", OssregistryWeb do

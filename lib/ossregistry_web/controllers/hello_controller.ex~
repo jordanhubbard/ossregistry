@@ -1,0 +1,8 @@
+defmodule OssregistryWeb.HelloController do
+  use OssregistryWeb, :controller
+
+  def index(conn, _params) do
+    # Standard hello world controller
+    render(conn, :index)
+  end
+end
