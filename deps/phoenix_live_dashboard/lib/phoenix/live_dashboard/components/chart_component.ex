@@ -43,20 +43,22 @@ defmodule Phoenix.LiveDashboard.ChartComponent do
       <div id={"chart-#{@id}"} class="card">
         <div class="card-body">
           <div phx-hook="PhxChartComponent" id={"chart-#{@id}-datasets"} hidden>
-          <%= for {x, y, z} <- @data do %>
-            <span data-x={x || @label} data-y={y} data-z={z}></span>
-          <% end %>
+            <%= for {x, y, z} <- @data do %>
+              <span data-x={x || @label} data-y={y} data-z={z}></span>
+            <% end %>
           </div>
-          <div class="chart"
-              id={"chart-ignore-#{@id}"}
-              phx-update="ignore"
-              data-label={@label}
-              data-metric={@kind}
-              data-title={@title}
-              data-tags={@tags}
-              data-unit={@unit}
-              data-prune-threshold={@prune_threshold}
-              {@metric_attrs}>
+          <div
+            class="chart"
+            id={"chart-ignore-#{@id}"}
+            phx-update="ignore"
+            data-label={@label}
+            data-metric={@kind}
+            data-title={@title}
+            data-tags={@tags}
+            data-unit={@unit}
+            data-prune-threshold={@prune_threshold}
+            {@metric_attrs}
+          >
           </div>
         </div>
         <%= if @description do %>

@@ -69,7 +69,9 @@ defmodule Mix.Tasks.Ecto.Load do
         "load structure for #{inspect(repo)}"
       )
 
-      {migration_repo, source} = Ecto.Migration.SchemaMigration.get_repo_and_source(repo, repo.config())
+      {migration_repo, source} =
+        Ecto.Migration.SchemaMigration.get_repo_and_source(repo, repo.config())
+
       {:ok, loaded?, _} = Ecto.Migrator.with_repo(migration_repo, &table_exists?.(&1, source))
 
       for repo <- Enum.uniq([repo, migration_repo]) do
@@ -110,12 +112,14 @@ defmodule Mix.Tasks.Ecto.Load do
     case repo.__adapter__().structure_load(source_repo_priv(repo), config) do
       {:ok, location} ->
         unless opts[:quiet] do
-          Mix.shell().info "The structure for #{inspect repo} has been loaded from #{location}"
+          Mix.shell().info("The structure for #{inspect(repo)} has been loaded from #{location}")
         end
+
       {:error, term} when is_binary(term) ->
-        Mix.raise "The structure for #{inspect repo} couldn't be loaded: #{term}"
+        Mix.raise("The structure for #{inspect(repo)} couldn't be loaded: #{term}")
+
       {:error, term} ->
-        Mix.raise "The structure for #{inspect repo} couldn't be loaded: #{inspect term}"
+        Mix.raise("The structure for #{inspect(repo)} couldn't be loaded: #{inspect(term)}")
     end
   end
 end

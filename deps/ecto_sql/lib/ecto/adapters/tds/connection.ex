@@ -217,8 +217,8 @@ if Code.ensure_loaded?(Tds) do
             ?(,
             quote_names(header),
             ?),
-            returning |
-            insert_all(rows, counter_offset)
+            returning
+            | insert_all(rows, counter_offset)
           ]
         end
 
@@ -236,6 +236,7 @@ if Code.ensure_loaded?(Tds) do
     defp insert_all(%Ecto.Query{} = query, _counter) do
       [?\s, all(query)]
     end
+
     defp insert_all(rows, counter) do
       sql =
         intersperse_reduce(rows, ",", counter, fn row, counter ->
@@ -396,12 +397,18 @@ if Code.ensure_loaded?(Tds) do
         {:&, _, [idx]} ->
           case elem(sources, idx) do
             {nil, source, nil} ->
-              error!(query, "Tds adapter does not support selecting all fields from fragment #{source}. " <>
-                            "Please specify exactly which fields you want to select")
+              error!(
+                query,
+                "Tds adapter does not support selecting all fields from fragment #{source}. " <>
+                  "Please specify exactly which fields you want to select"
+              )
 
             {source, _, nil} ->
-              error!(query, "Tds adapter does not support selecting all fields from #{source} without a schema. " <>
-                            "Please specify a schema or specify exactly which fields you want in projection")
+              error!(
+                query,
+                "Tds adapter does not support selecting all fields from #{source} without a schema. " <>
+                  "Please specify a schema or specify exactly which fields you want in projection"
+              )
 
             {_, source, _} ->
               source
@@ -526,7 +533,9 @@ if Code.ensure_loaded?(Tds) do
     defp join_qual(:cross), do: "CROSS JOIN "
     defp join_qual(:inner_lateral), do: "CROSS APPLY "
     defp join_qual(:left_lateral), do: "OUTER APPLY "
-    defp join_qual(:cross_lateral), do: error!(nil, "cross lateral joins are not supported in the Tds Adapter")
+
+    defp join_qual(:cross_lateral),
+      do: error!(nil, "cross lateral joins are not supported in the Tds Adapter")
 
     defp where(%Query{wheres: wheres} = query, sources) do
       boolean(" WHERE ", wheres, sources, query)
@@ -1268,7 +1277,11 @@ if Code.ensure_loaded?(Tds) do
       end
     end
 
-    defp column_change(_statement_prefix, _table, {_command, _name, %Reference{validate: false}, _opts}) do
+    defp column_change(
+           _statement_prefix,
+           _table,
+           {_command, _name, %Reference{validate: false}, _opts}
+         ) do
       error!(nil, "validate: false on references is not supported in Tds")
     end
 
@@ -1527,7 +1540,10 @@ if Code.ensure_loaded?(Tds) do
 
     defp quote_name(name) when is_binary(name) do
       if String.contains?(name, ["[", "]"]) do
-        error!(nil, "bad literal/field/table name #{inspect(name)} ('[' and ']' are not permitted)")
+        error!(
+          nil,
+          "bad literal/field/table name #{inspect(name)} ('[' and ']' are not permitted)"
+        )
       end
 
       "[#{name}]"
@@ -1538,7 +1554,15 @@ if Code.ensure_loaded?(Tds) do
     defp quote_table(nil, name), do: quote_table(name)
 
     defp quote_table({server, db, schema}, name),
-      do: [quote_table(server), ".", quote_table(db), ".", quote_table(schema), ".", quote_table(name)]
+      do: [
+        quote_table(server),
+        ".",
+        quote_table(db),
+        ".",
+        quote_table(schema),
+        ".",
+        quote_table(name)
+      ]
 
     defp quote_table({db, schema}, name),
       do: [quote_table(db), ".", quote_table(schema), ".", quote_table(name)]

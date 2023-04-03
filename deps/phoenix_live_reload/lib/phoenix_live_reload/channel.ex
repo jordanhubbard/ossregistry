@@ -28,7 +28,7 @@ defmodule Phoenix.LiveReloader.Channel do
     %{
       patterns: patterns,
       debounce: debounce,
-      notify_patterns: notify_patterns,
+      notify_patterns: notify_patterns
     } = socket.assigns
 
     if matches_any_pattern?(path, patterns) do
@@ -47,7 +47,7 @@ defmodule Phoenix.LiveReloader.Channel do
           socket.pubsub_server,
           to_string(topic),
           {:phoenix_live_reload, topic, path}
-          )
+        )
       end
     end
 

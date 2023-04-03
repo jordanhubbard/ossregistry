@@ -1042,6 +1042,7 @@ defmodule Phoenix.LiveView.Channel do
         rescue
           exception ->
             status = Plug.Exception.status(exception)
+
             if status >= 400 and status < 500 do
               GenServer.reply(from, {:error, %{reason: "reload", status: status}})
               {:stop, :shutdown, :no_state}

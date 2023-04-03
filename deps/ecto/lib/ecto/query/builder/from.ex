@@ -50,7 +50,7 @@ defmodule Ecto.Query.Builder.From do
   end
 
   defp escape_source(query, _env), do: query
-  
+
   @typep hints :: [String.t() | {atom, term}]
 
   @doc """
@@ -60,7 +60,7 @@ defmodule Ecto.Query.Builder.From do
   If possible, it does all calculations at compile time to avoid
   runtime work.
   """
-  @spec build(Macro.t(), Macro.Env.t(), atom, {:ok, String.t | nil} | nil, hints) ::
+  @spec build(Macro.t(), Macro.Env.t(), atom, {:ok, String.t() | nil} | nil, hints) ::
           {Macro.t(), Keyword.t(), non_neg_integer | nil}
   def build(query, env, as, prefix, hints) do
     unless Enum.all?(hints, &is_valid_hint/1) do
@@ -71,16 +71,31 @@ defmodule Ecto.Query.Builder.From do
     end
 
     case prefix do
-      nil -> :ok
-      {:ok, prefix} when is_binary(prefix) or is_nil(prefix) -> :ok
-      _ -> Builder.error!("`prefix` must be a compile time string, got: `#{Macro.to_string(prefix)}`")
+      nil ->
+        :ok
+
+      {:ok, prefix} when is_binary(prefix) or is_nil(prefix) ->
+        :ok
+
+      _ ->
+        Builder.error!(
+          "`prefix` must be a compile time string, got: `#{Macro.to_string(prefix)}`"
+        )
     end
-    
-    as = case as do
-      {:^, _, [as]} -> as
-      as when is_atom(as) -> as
-      as -> Builder.error!("`as` must be a compile time atom or an interpolated value using ^, got: #{Macro.to_string(as)}")
-    end
+
+    as =
+      case as do
+        {:^, _, [as]} ->
+          as
+
+        as when is_atom(as) ->
+          as
+
+        as ->
+          Builder.error!(
+            "`as` must be a compile time atom or an interpolated value using ^, got: #{Macro.to_string(as)}"
+          )
+      end
 
     {query, binds} = escape(query, env)
 
@@ -108,7 +123,13 @@ defmodule Ecto.Query.Builder.From do
       _other ->
         quoted =
           quote do
-            Ecto.Query.Builder.From.apply(unquote(query), unquote(length(binds)), unquote(as), unquote(prefix), unquote(hints))
+            Ecto.Query.Builder.From.apply(
+              unquote(query),
+              unquote(length(binds)),
+              unquote(as),
+              unquote(prefix),
+              unquote(hints)
+            )
           end
 
         {quoted, binds, nil}
@@ -117,7 +138,16 @@ defmodule Ecto.Query.Builder.From do
 
   defp query(prefix, source, params, as, hints, file, line) do
     aliases = if as, do: [{as, 0}], else: []
-    from_fields = [source: source, params: params, as: as, prefix: prefix, hints: hints, file: file, line: line]
+
+    from_fields = [
+      source: source,
+      params: params,
+      as: as,
+      prefix: prefix,
+      hints: hints,
+      file: file,
+      line: line
+    ]
 
     query_fields = [
       from: {:%, [], [Ecto.Query.FromExpr, {:%{}, [], from_fields}]},
@@ -138,7 +168,8 @@ defmodule Ecto.Query.Builder.From do
   @doc """
   The callback applied by `build/2` to build the query.
   """
-  @spec apply(Ecto.Queryable.t(), non_neg_integer, Macro.t(), {:ok, String.t} | nil, hints) :: Ecto.Query.t()
+  @spec apply(Ecto.Queryable.t(), non_neg_integer, Macro.t(), {:ok, String.t()} | nil, hints) ::
+          Ecto.Query.t()
   def apply(query, binds, as, prefix, hints) do
     query =
       query
@@ -170,7 +201,7 @@ defmodule Ecto.Query.Builder.From do
   defp maybe_apply_prefix(query, nil), do: query
 
   defp maybe_apply_prefix(query, {:ok, prefix}) do
-    update_in query.from.prefix, fn
+    update_in(query.from.prefix, fn
       nil ->
         prefix
 
@@ -178,7 +209,7 @@ defmodule Ecto.Query.Builder.From do
         Builder.error!(
           "can't apply prefix `#{inspect(prefix)}`, `from` is already prefixed to `#{inspect(from_prefix)}`"
         )
-    end
+    end)
   end
 
   defp maybe_apply_hints(query, []), do: query

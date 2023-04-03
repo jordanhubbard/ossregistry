@@ -490,7 +490,7 @@ defmodule Phoenix.Socket.Transport do
          conn = put_in(conn.secret_key_base, endpoint.config(:secret_key_base)),
          {_, session} <- store.get(conn, cookie, init),
          csrf_state when is_binary(csrf_state) <-
-          Plug.CSRFProtection.dump_state_from_session(session[csrf_token_key]),
+           Plug.CSRFProtection.dump_state_from_session(session[csrf_token_key]),
          true <- Plug.CSRFProtection.valid_state_and_csrf_token?(csrf_state, csrf_token) do
       session
     else

@@ -48,62 +48,62 @@ defmodule Ecto.Query.API do
   @doc """
   Binary `==` operation.
   """
-  def left == right, do: doc! [left, right]
+  def left == right, do: doc!([left, right])
 
   @doc """
   Binary `!=` operation.
   """
-  def left != right, do: doc! [left, right]
+  def left != right, do: doc!([left, right])
 
   @doc """
   Binary `<=` operation.
   """
-  def left <= right, do: doc! [left, right]
+  def left <= right, do: doc!([left, right])
 
   @doc """
   Binary `>=` operation.
   """
-  def left >= right, do: doc! [left, right]
+  def left >= right, do: doc!([left, right])
 
   @doc """
   Binary `<` operation.
   """
-  def left < right, do: doc! [left, right]
+  def left < right, do: doc!([left, right])
 
   @doc """
   Binary `>` operation.
   """
-  def left > right, do: doc! [left, right]
+  def left > right, do: doc!([left, right])
 
   @doc """
   Binary `+` operation.
   """
-  def left + right, do: doc! [left, right]
+  def left + right, do: doc!([left, right])
 
   @doc """
   Binary `-` operation.
   """
-  def left - right, do: doc! [left, right]
+  def left - right, do: doc!([left, right])
 
   @doc """
   Binary `*` operation.
   """
-  def left * right, do: doc! [left, right]
+  def left * right, do: doc!([left, right])
 
   @doc """
   Binary `/` operation.
   """
-  def left / right, do: doc! [left, right]
+  def left / right, do: doc!([left, right])
 
   @doc """
   Binary `and` operation.
   """
-  def left and right, do: doc! [left, right]
+  def left and right, do: doc!([left, right])
 
   @doc """
   Binary `or` operation.
   """
-  def left or right, do: doc! [left, right]
+  def left or right, do: doc!([left, right])
 
   @doc """
   Unary `not` operation.
@@ -128,7 +128,7 @@ defmodule Ecto.Query.API do
           )
 
   """
-  def not(value), do: doc! [value]
+  def not value, do: doc!([value])
 
   @doc """
   Checks if the left-value is included in the right one.
@@ -146,7 +146,7 @@ defmodule Ecto.Query.API do
         from(p in Post, where: p.created_at > ^since)
       )
   """
-  def left in right, do: doc! [left, right]
+  def left in right, do: doc!([left, right])
 
   @doc """
   Evaluates to true if the provided subquery returns 1 or more rows.
@@ -167,7 +167,7 @@ defmodule Ecto.Query.API do
   In the above example the query returns posts which have at least one comment that
   has more than 5 replies.
   """
-  def exists(subquery), do: doc! [subquery]
+  def exists(subquery), do: doc!([subquery])
 
   @doc """
   Tests whether one or more values returned from the provided subquery match in a comparison operation.
@@ -182,7 +182,7 @@ defmodule Ecto.Query.API do
   Both `any` and `all` must be given a subquery as an argument, and they must be used on the right hand side of a comparison.
   Both can be used with every comparison operator: `==`, `!=`, `>`, `>=`, `<`, `<=`.
   """
-  def any(subquery), do: doc! [subquery]
+  def any(subquery), do: doc!([subquery])
 
   @doc """
   Evaluates whether all values returned from the provided subquery match in a comparison operation.
@@ -202,7 +202,7 @@ defmodule Ecto.Query.API do
   Both `any` and `all` must be given a subquery as an argument, and they must be used on the right hand side of a comparison.
   Both can be used with every comparison operator: `==`, `!=`, `>`, `>=`, `<`, `<=`.
   """
-  def all(subquery), do: doc! [subquery]
+  def all(subquery), do: doc!([subquery])
 
   @doc """
   Searches for `search` in `string`.
@@ -219,7 +219,7 @@ defmodule Ecto.Query.API do
   as part of LIKE query, since they allow to perform
   [LIKE-injections](https://githubengineering.com/like-injection/).
   """
-  def like(string, search), do: doc! [string, search]
+  def like(string, search), do: doc!([string, search])
 
   @doc """
   Searches for `search` in `string` in a case insensitive fashion.
@@ -229,7 +229,7 @@ defmodule Ecto.Query.API do
   Translates to the underlying SQL ILIKE query. This operation is
   only available on PostgreSQL.
   """
-  def ilike(string, search), do: doc! [string, search]
+  def ilike(string, search), do: doc!([string, search])
 
   @doc """
   Checks if the given value is nil.
@@ -240,28 +240,28 @@ defmodule Ecto.Query.API do
 
       from p in Post, where: not is_nil(p.published_at)
   """
-  def is_nil(value), do: doc! [value]
+  def is_nil(value), do: doc!([value])
 
   @doc """
   Counts the entries in the table.
 
       from p in Post, select: count()
   """
-  def count, do: doc! []
+  def count, do: doc!([])
 
   @doc """
   Counts the given entry.
 
       from p in Post, select: count(p.id)
   """
-  def count(value), do: doc! [value]
+  def count(value), do: doc!([value])
 
   @doc """
   Counts the distinct values in given entry.
 
       from p in Post, select: count(p.id, :distinct)
   """
-  def count(value, :distinct), do: doc! [value, :distinct]
+  def count(value, :distinct), do: doc!([value, :distinct])
 
   @doc """
   Takes whichever value is not null, or null if they both are.
@@ -272,7 +272,7 @@ defmodule Ecto.Query.API do
 
       from p in Payment, select: p.value |> coalesce(p.backup_value) |> coalesce(0)
   """
-  def coalesce(value, expr), do: doc! [value, expr]
+  def coalesce(value, expr), do: doc!([value, expr])
 
   @doc """
   Applies the given expression as a FILTER clause against an
@@ -282,35 +282,35 @@ defmodule Ecto.Query.API do
 
       from p in Payment, select: avg(p.value) |> filter(p.value < 0)
   """
-  def filter(value, filter), do: doc! [value, filter]
+  def filter(value, filter), do: doc!([value, filter])
 
   @doc """
   Calculates the average for the given entry.
 
       from p in Payment, select: avg(p.value)
   """
-  def avg(value), do: doc! [value]
+  def avg(value), do: doc!([value])
 
   @doc """
   Calculates the sum for the given entry.
 
       from p in Payment, select: sum(p.value)
   """
-  def sum(value), do: doc! [value]
+  def sum(value), do: doc!([value])
 
   @doc """
   Calculates the minimum for the given entry.
 
       from p in Payment, select: min(p.value)
   """
-  def min(value), do: doc! [value]
+  def min(value), do: doc!([value])
 
   @doc """
   Calculates the maximum for the given entry.
 
       from p in Payment, select: max(p.value)
   """
-  def max(value), do: doc! [value]
+  def max(value), do: doc!([value])
 
   @doc """
   Adds a given interval to a datetime.
@@ -329,7 +329,7 @@ defmodule Ecto.Query.API do
 
   See [Intervals](#module-intervals) for supported `interval` values.
   """
-  def datetime_add(datetime, count, interval), do: doc! [datetime, count, interval]
+  def datetime_add(datetime, count, interval), do: doc!([datetime, count, interval])
 
   @doc """
   Adds a given interval to a date.
@@ -338,7 +338,7 @@ defmodule Ecto.Query.API do
 
   See [Intervals](#module-intervals) for supported `interval` values.
   """
-  def date_add(date, count, interval), do: doc! [date, count, interval]
+  def date_add(date, count, interval), do: doc!([date, count, interval])
 
   @doc """
   Adds the given interval to the current time in UTC.
@@ -353,7 +353,7 @@ defmodule Ecto.Query.API do
       from a in Account, where: a.expires_at < from_now(3, "month")
 
   """
-  def from_now(count, interval), do: doc! [count, interval]
+  def from_now(count, interval), do: doc!([count, interval])
 
   @doc """
   Subtracts the given interval from the current time in UTC.
@@ -367,7 +367,7 @@ defmodule Ecto.Query.API do
 
       from p in Post, where: p.published_at > ago(3, "month")
   """
-  def ago(count, interval), do: doc! [count, interval]
+  def ago(count, interval), do: doc!([count, interval])
 
   @doc """
   Send fragments directly to the database.
@@ -450,7 +450,7 @@ defmodule Ecto.Query.API do
           where: fragment(title: ["$eq": ^some_value])
 
   """
-  def fragment(fragments), do: doc! [fragments]
+  def fragment(fragments), do: doc!([fragments])
 
   @doc """
   Allows a field to be dynamically accessed.
@@ -463,7 +463,7 @@ defmodule Ecto.Query.API do
   In the example above, both `at_least_four(:doors)` and `at_least_four(:tires)`
   would be valid calls as the field is dynamically generated.
   """
-  def field(source, field), do: doc! [source, field]
+  def field(source, field), do: doc!([source, field])
 
   @doc """
   Used in `select` to specify which struct fields should be returned.
@@ -511,7 +511,7 @@ defmodule Ecto.Query.API do
   MUST include the foreign keys used in the relationship,
   otherwise Ecto will be unable to find associated records.
   """
-  def struct(source, fields), do: doc! [source, fields]
+  def struct(source, fields), do: doc!([source, fields])
 
   @doc """
   Used in `select` to specify which fields should be returned as a map.
@@ -554,7 +554,7 @@ defmodule Ecto.Query.API do
   MUST include the foreign keys used in the relationship,
   otherwise Ecto will be unable to find associated records.
   """
-  def map(source, fields), do: doc! [source, fields]
+  def map(source, fields), do: doc!([source, fields])
 
   @doc """
   Merges the map on the right over the map on the left.
@@ -568,7 +568,7 @@ defmodule Ecto.Query.API do
   This function is primarily used by `Ecto.Query.select_merge/3`
   to merge different select clauses.
   """
-  def merge(left_map, right_map), do: doc! [left_map, right_map]
+  def merge(left_map, right_map), do: doc!([left_map, right_map])
 
   @doc """
   Returns value from the `json_field` pointed to by `path`.
@@ -619,7 +619,7 @@ defmodule Ecto.Query.API do
   tries to compare incompatible types. You can, however, use `type/2`
   to force the types on the database level.
   """
-  def json_extract_path(json_field, path), do: doc! [json_field, path]
+  def json_extract_path(json_field, path), do: doc!([json_field, path])
 
   @doc """
   Casts the given value to the given type at the database level.
@@ -674,14 +674,14 @@ defmodule Ecto.Query.API do
       from Post, as: :posts, inner_lateral_join: c in subquery(child), select: c.text
 
   """
-  def type(interpolated_value, type), do: doc! [interpolated_value, type]
+  def type(interpolated_value, type), do: doc!([interpolated_value, type])
 
   @doc """
   Refer to a named atom binding.
 
   See the "Named binding" section in `Ecto.Query` for more information.
   """
-  def as(binding), do: doc! [binding]
+  def as(binding), do: doc!([binding])
 
   @doc """
   Refer to a named atom binding in the parent query.
@@ -690,7 +690,7 @@ defmodule Ecto.Query.API do
 
   See the "Named binding" section in `Ecto.Query` for more information.
   """
-  def parent_as(binding), do: doc! [binding]
+  def parent_as(binding), do: doc!([binding])
 
   @doc """
   Refer to an alias of a selected value.
@@ -703,7 +703,7 @@ defmodule Ecto.Query.API do
   referenced somewhere that is not allowed. Consult the documentation for the database
   to ensure the alias is being referenced correctly.
   """
-  def selected_as(name), do: doc! [name]
+  def selected_as(name), do: doc!([name])
 
   @doc """
   Creates an alias for the given selected value.
@@ -755,10 +755,10 @@ defmodule Ecto.Query.API do
   The name given to `selected_as/2` can also be referenced in `selected_as/1`,
   as in regular queries.
   """
-  def selected_as(selected_value, name), do: doc! [selected_value, name]
+  def selected_as(selected_value, name), do: doc!([selected_value, name])
 
   defp doc!(_) do
     raise "the functions in Ecto.Query.API should not be invoked directly, " <>
-          "they serve for documentation purposes only"
+            "they serve for documentation purposes only"
   end
 end

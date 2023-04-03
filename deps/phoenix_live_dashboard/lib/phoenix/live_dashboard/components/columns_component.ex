@@ -40,13 +40,13 @@ defmodule Phoenix.LiveDashboard.ColumnsComponent do
   @impl true
   def render(assigns) do
     ~H"""
-      <%= for column_components <- @components do %>
-        <div class={"col-sm-#{@columns_class} mb-4 flex-column d-flex"}>
-          <%= for {component_module, component_params} <- List.wrap(column_components) do %>
-            <%= live_component component_module, Map.put(component_params, :page, @page) %>
-          <% end %>
-        </div>
-      <% end %>
+    <%= for column_components <- @components do %>
+      <div class={"col-sm-#{@columns_class} mb-4 flex-column d-flex"}>
+        <%= for {component_module, component_params} <- List.wrap(column_components) do %>
+          <%= live_component(component_module, Map.put(component_params, :page, @page)) %>
+        <% end %>
+      </div>
+    <% end %>
     """
   end
 end

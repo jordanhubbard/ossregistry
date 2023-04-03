@@ -56,12 +56,12 @@ defmodule Phoenix.LiveDashboard.FieldsCardComponent do
               </h6>
             <% end %>
             <dl>
-            <%= for {k, v} <- @fields do %>
-              <dt class="pb-1"><%= k %></dt>
-              <dd>
-                <textarea class="code-field text-monospace" readonly="readonly" rows="1"><%= v %></textarea>
-              </dd>
-            <% end %>
+              <%= for {k, v} <- @fields do %>
+                <dt class="pb-1"><%= k %></dt>
+                <dd>
+                  <textarea class="code-field text-monospace" readonly="readonly" rows="1"><%= v %></textarea>
+                </dd>
+              <% end %>
             </dl>
           </div>
         </div>

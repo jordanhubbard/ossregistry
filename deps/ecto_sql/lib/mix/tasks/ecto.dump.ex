@@ -50,13 +50,17 @@ defmodule Mix.Tasks.Ecto.Dump do
 
   @impl true
   def run(args) do
-    {opts, _} = OptionParser.parse! args, strict: @switches, aliases: @aliases
+    {opts, _} = OptionParser.parse!(args, strict: @switches, aliases: @aliases)
     opts = Keyword.merge(@default_opts, opts)
 
-    Enum.each parse_repo(args), fn repo ->
+    Enum.each(parse_repo(args), fn repo ->
       ensure_repo(repo, args)
-      ensure_implements(repo.__adapter__(), Ecto.Adapter.Structure,
-                                            "dump structure for #{inspect repo}")
+
+      ensure_implements(
+        repo.__adapter__(),
+        Ecto.Adapter.Structure,
+        "dump structure for #{inspect(repo)}"
+      )
 
       migration_repo = repo.config()[:migration_repo] || repo
 
@@ -66,14 +70,18 @@ defmodule Mix.Tasks.Ecto.Dump do
         case repo.__adapter__().structure_dump(source_repo_priv(repo), config) do
           {:ok, location} ->
             unless opts[:quiet] do
-              Mix.shell().info "The structure for #{inspect repo} has been dumped to #{location}"
+              Mix.shell().info(
+                "The structure for #{inspect(repo)} has been dumped to #{location}"
+              )
             end
+
           {:error, term} when is_binary(term) ->
-            Mix.raise "The structure for #{inspect repo} couldn't be dumped: #{term}"
+            Mix.raise("The structure for #{inspect(repo)} couldn't be dumped: #{term}")
+
           {:error, term} ->
-            Mix.raise "The structure for #{inspect repo} couldn't be dumped: #{inspect term}"
+            Mix.raise("The structure for #{inspect(repo)} couldn't be dumped: #{inspect(term)}")
         end
       end
-    end
+    end)
   end
 end

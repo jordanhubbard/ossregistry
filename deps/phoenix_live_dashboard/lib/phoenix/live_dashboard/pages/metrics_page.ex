@@ -72,9 +72,9 @@ defmodule Phoenix.LiveDashboard.MetricsPage do
       ~H"""
       <%= if @metrics do %>
         <div class="phx-dashboard-metrics-grid row">
-        <%= for {metric, id} <- @metrics do %>
-          <%= live_component ChartComponent, id: id(id, @nav), metric: metric %>
-        <% end %>
+          <%= for {metric, id} <- @metrics do %>
+            <%= live_component(ChartComponent, id: id(id, @nav), metric: metric) %>
+          <% end %>
         </div>
       <% end %>
       """

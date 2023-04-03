@@ -62,7 +62,10 @@ defmodule Phoenix.PubSub.PG2 do
     name = Keyword.fetch!(opts, :name)
     pool_size = Keyword.get(opts, :pool_size, 1)
     adapter_name = Keyword.fetch!(opts, :adapter_name)
-    Supervisor.start_link(__MODULE__, {name, adapter_name, pool_size}, name: :"#{adapter_name}_supervisor")
+
+    Supervisor.start_link(__MODULE__, {name, adapter_name, pool_size},
+      name: :"#{adapter_name}_supervisor"
+    )
   end
 
   @impl true

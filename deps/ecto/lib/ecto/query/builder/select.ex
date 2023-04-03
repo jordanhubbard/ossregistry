@@ -23,12 +23,13 @@ defmodule Ecto.Query.Builder.Select do
       {{:{}, [], [:&, [], [0]]}, {[], %{take: %{}, subqueries: [], aliases: %{}}}}
 
   """
-  @spec escape(Macro.t, Keyword.t, Macro.Env.t) :: {Macro.t, {list, %{take: map, subqueries: list}}}
+  @spec escape(Macro.t(), Keyword.t(), Macro.Env.t()) ::
+          {Macro.t(), {list, %{take: map, subqueries: list}}}
   def escape(atom, _vars, _env)
       when is_atom(atom) and not is_boolean(atom) and atom != nil do
-    Builder.error! """
+    Builder.error!("""
     #{inspect(atom)} is not a valid query expression, :select expects a query expression or a list of fields
-    """
+    """)
   end
 
   def escape(other, vars, env) do
@@ -40,14 +41,16 @@ defmodule Ecto.Query.Builder.Select do
         }
 
       maybe_take?(other) ->
-        Builder.error! """
+        Builder.error!("""
         Cannot mix fields with interpolations, such as: `select: [:foo, ^:bar, :baz]`. \
         Instead interpolate all fields at once, such as: `select: ^[:foo, :bar, :baz]`. \
         Got: #{Macro.to_string(other)}.
-        """
+        """)
 
       true ->
-        {expr, {params, acc}} = escape(other, {[], %{take: %{}, subqueries: [], aliases: %{}}}, vars, env)
+        {expr, {params, acc}} =
+          escape(other, {[], %{take: %{}, subqueries: [], aliases: %{}}}, vars, env)
+
         acc = %{acc | subqueries: Enum.reverse(acc.subqueries)}
         {expr, {params, acc}}
     end
@@ -88,7 +91,9 @@ defmodule Ecto.Query.Builder.Select do
   end
 
   defp escape({:merge, _, [_left, right]}, _params_acc, _vars, _env) do
-    Builder.error! "expected the second argument of merge/2 in select to be a map, got: `#{Macro.to_string(right)}`"
+    Builder.error!(
+      "expected the second argument of merge/2 in select to be a map, got: `#{Macro.to_string(right)}`"
+    )
   end
 
   # Map
@@ -120,7 +125,7 @@ defmodule Ecto.Query.Builder.Select do
   end
 
   defp escape({:selected_as, _, [_expr, name]}, {_params, _acc}, _vars, _env) do
-    Builder.error! "selected_as/2 expects `name` to be an atom, got `#{inspect(name)}`"
+    Builder.error!("selected_as/2 expects `name` to be an atom, got `#{inspect(name)}`")
   end
 
   defp escape(expr, params_acc, vars, env) do
@@ -152,10 +157,12 @@ defmodule Ecto.Query.Builder.Select do
       Ecto.Query.Builder.Select.fields!(unquote(tag), unquote(interpolated))
     end
   end
+
   defp escape_fields(expr, tag, env) do
     case Macro.expand(expr, env) do
       fields when is_list(fields) ->
         fields
+
       _ ->
         Builder.error!(
           "`#{tag}/2` in `select` expects either a literal or " <>
@@ -173,7 +180,7 @@ defmodule Ecto.Query.Builder.Select do
       fields
     else
       raise ArgumentError,
-        "expected a list of fields in `#{tag}/2` inside `select`, got: `#{inspect fields}`"
+            "expected a list of fields in `#{tag}/2` inside `select`, got: `#{inspect(fields)}`"
     end
   end
 
@@ -183,19 +190,21 @@ defmodule Ecto.Query.Builder.Select do
   end
 
   defp take?(fields) do
-    is_list(fields) and Enum.all?(fields, fn
-      {k, v} when is_atom(k) -> take?(List.wrap(v))
-      k when is_atom(k) -> true
-      _ -> false
-    end)
+    is_list(fields) and
+      Enum.all?(fields, fn
+        {k, v} when is_atom(k) -> take?(List.wrap(v))
+        k when is_atom(k) -> true
+        _ -> false
+      end)
   end
 
   defp maybe_take?(fields) do
-    is_list(fields) and Enum.any?(fields, fn
-      {k, v} when is_atom(k) -> maybe_take?(List.wrap(v))
-      k when is_atom(k) -> true
-      _ -> false
-    end)
+    is_list(fields) and
+      Enum.any?(fields, fn
+        {k, v} when is_atom(k) -> maybe_take?(List.wrap(v))
+        k when is_atom(k) -> true
+        _ -> false
+      end)
   end
 
   @doc """
@@ -230,9 +239,20 @@ defmodule Ecto.Query.Builder.Select do
     end
   end
 
-  defp expand_nested(%Ecto.Query.DynamicExpr{} = dynamic, {params, subqueries, aliases, count}, query) do
+  defp expand_nested(
+         %Ecto.Query.DynamicExpr{} = dynamic,
+         {params, subqueries, aliases, count},
+         query
+       ) do
     {expr, params, subqueries, aliases, count} =
-      Ecto.Query.Builder.Dynamic.partially_expand(query, dynamic, params, subqueries, aliases, count)
+      Ecto.Query.Builder.Dynamic.partially_expand(
+        query,
+        dynamic,
+        params,
+        subqueries,
+        aliases,
+        count
+      )
 
     {expr, {params, subqueries, aliases, count}}
   end
@@ -282,12 +302,17 @@ defmodule Ecto.Query.Builder.Select do
   If possible, it does all calculations at compile time to avoid
   runtime work.
   """
-  @spec build(:select | :merge, Macro.t, [Macro.t], Macro.t, Macro.Env.t) :: Macro.t
+  @spec build(:select | :merge, Macro.t(), [Macro.t()], Macro.t(), Macro.Env.t()) :: Macro.t()
 
   def build(kind, query, _binding, {:^, _, [var]}, env) do
     quote do
-      Ecto.Query.Builder.Select.select!(unquote(kind), unquote(query), unquote(var),
-                                        unquote(env.file), unquote(env.line))
+      Ecto.Query.Builder.Select.select!(
+        unquote(kind),
+        unquote(query),
+        unquote(var),
+        unquote(env.file),
+        unquote(env.line)
+      )
     end
   end
 
@@ -298,14 +323,16 @@ defmodule Ecto.Query.Builder.Select do
     take = {:%{}, [], Map.to_list(acc.take)}
     aliases = {:%{}, [], Map.to_list(acc.aliases)}
 
-    select = quote do: %Ecto.Query.SelectExpr{
-                         expr: unquote(expr),
-                         params: unquote(params),
-                         file: unquote(env.file),
-                         line: unquote(env.line),
-                         take: unquote(take),
-                         subqueries: unquote(acc.subqueries),
-                         aliases: unquote(aliases)}
+    select =
+      quote do: %Ecto.Query.SelectExpr{
+              expr: unquote(expr),
+              params: unquote(params),
+              file: unquote(env.file),
+              line: unquote(env.line),
+              take: unquote(take),
+              subqueries: unquote(acc.subqueries),
+              aliases: unquote(aliases)
+            }
 
     if kind == :select do
       Builder.apply_query(query, __MODULE__, [select], env)
@@ -320,13 +347,15 @@ defmodule Ecto.Query.Builder.Select do
   @doc """
   The callback applied by `build/5` to build the query.
   """
-  @spec apply(Ecto.Queryable.t, term) :: Ecto.Query.t
+  @spec apply(Ecto.Queryable.t(), term) :: Ecto.Query.t()
   def apply(%Ecto.Query{select: nil} = query, expr) do
     %{query | select: expr}
   end
+
   def apply(%Ecto.Query{}, _expr) do
-    Builder.error! "only one select expression is allowed in query"
+    Builder.error!("only one select expression is allowed in query")
   end
+
   def apply(query, expr) do
     apply(Ecto.Queryable.to_query(query), expr)
   end
@@ -337,16 +366,49 @@ defmodule Ecto.Query.Builder.Select do
   def merge(%Ecto.Query{select: nil} = query, new_select) do
     merge(query, new_select, {:&, [], [0]}, [], [], %{}, %{}, new_select)
   end
+
   def merge(%Ecto.Query{select: old_select} = query, new_select) do
-    %{expr: old_expr, params: old_params, subqueries: old_subqueries, take: old_take, aliases: old_aliases} = old_select
-    merge(query, old_select, old_expr, old_params, old_subqueries, old_take, old_aliases, new_select)
+    %{
+      expr: old_expr,
+      params: old_params,
+      subqueries: old_subqueries,
+      take: old_take,
+      aliases: old_aliases
+    } = old_select
+
+    merge(
+      query,
+      old_select,
+      old_expr,
+      old_params,
+      old_subqueries,
+      old_take,
+      old_aliases,
+      new_select
+    )
   end
+
   def merge(query, expr) do
     merge(Ecto.Queryable.to_query(query), expr)
   end
 
-  defp merge(query, select, old_expr, old_params, old_subqueries, old_take, old_aliases, new_select) do
-    %{expr: new_expr, params: new_params, subqueries: new_subqueries, take: new_take, aliases: new_aliases} = new_select
+  defp merge(
+         query,
+         select,
+         old_expr,
+         old_params,
+         old_subqueries,
+         old_take,
+         old_aliases,
+         new_select
+       ) do
+    %{
+      expr: new_expr,
+      params: new_params,
+      subqueries: new_subqueries,
+      take: new_take,
+      aliases: new_aliases
+    } = new_select
 
     new_expr =
       new_expr
@@ -409,11 +471,12 @@ defmodule Ecto.Query.Builder.Select do
       end
 
     select = %{
-      select | expr: expr,
-               params: old_params ++ bump_subquery_params(new_params, old_subqueries),
-               subqueries: old_subqueries ++ new_subqueries,
-               take: merge_take(query.from.source, old_expr, old_take, new_take),
-               aliases: merge_aliases(old_aliases, new_aliases)
+      select
+      | expr: expr,
+        params: old_params ++ bump_subquery_params(new_params, old_subqueries),
+        subqueries: old_subqueries ++ new_subqueries,
+        take: merge_take(query.from.source, old_expr, old_take, new_take),
+        aliases: merge_aliases(old_aliases, new_aliases)
     }
 
     %{query | select: select}
@@ -482,10 +545,14 @@ defmodule Ecto.Query.Builder.Select do
           # If merging with a schemaless source, do nothing so the planner can take all the fields.
           case {old_expr, source} do
             {{:&, _, [^binding]}, {_source, schema}} when not is_nil(schema) ->
-              Map.put(acc, binding, {new_kind, Enum.uniq(new_fields ++ schema.__schema__(:query_fields))})
+              Map.put(
+                acc,
+                binding,
+                {new_kind, Enum.uniq(new_fields ++ schema.__schema__(:query_fields))}
+              )
 
             {{:&, _, [^binding]}, _} ->
-                acc
+              acc
 
             _ ->
               Map.put(acc, binding, new_value)
@@ -501,9 +568,12 @@ defmodule Ecto.Query.Builder.Select do
   defp merge_take_kind(_, kind, kind), do: kind
   defp merge_take_kind(_, :any, kind), do: kind
   defp merge_take_kind(_, kind, :any), do: kind
+
   defp merge_take_kind(binding, old, new) do
-    Builder.error! "cannot select_merge because the binding at position #{binding} " <>
-                   "was previously specified as a `#{old}` and later as `#{new}`"
+    Builder.error!(
+      "cannot select_merge because the binding at position #{binding} " <>
+        "was previously specified as a `#{old}` and later as `#{new}`"
+    )
   end
 
   defp merge_aliases(old_aliases, new_aliases) do

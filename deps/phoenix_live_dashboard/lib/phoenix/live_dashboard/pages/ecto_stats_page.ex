@@ -295,7 +295,11 @@ defmodule Phoenix.LiveDashboard.EctoStatsPage do
 
             Depending on the database Ecto PSQL Extras or Ecto MySQL Extras should be installed.
 
-            Check the <a href="https://hexdocs.pm/phoenix_live_dashboard/ecto_stats.html" target="_blank">documentation</a> for details.
+            Check the
+            <a href="https://hexdocs.pm/phoenix_live_dashboard/ecto_stats.html" target="_blank">
+              documentation
+            </a>
+            for details.
           </small>
           """
 

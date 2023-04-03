@@ -9,7 +9,7 @@ defmodule Ecto.Query.Builder.Dynamic do
   @doc """
   Builds a dynamic expression.
   """
-  @spec build([Macro.t], Macro.t, Macro.Env.t) :: Macro.t
+  @spec build([Macro.t()], Macro.t(), Macro.Env.t()) :: Macro.t()
   def build(binding, expr, env) do
     {query, vars} = Builder.escape_binding(quote(do: query), binding, env)
     {expr, {params, acc}} = escape(expr, {[], %{subqueries: [], aliases: %{}}}, vars, env)
@@ -17,13 +17,17 @@ defmodule Ecto.Query.Builder.Dynamic do
     params = Builder.escape_params(params)
 
     quote do
-      %Ecto.Query.DynamicExpr{fun: fn query ->
-                                _ = unquote(query)
-                                {unquote(expr), unquote(params), unquote(Enum.reverse(acc.subqueries)), unquote(aliases)}
-                              end,
-                              binding: unquote(Macro.escape(binding)),
-                              file: unquote(env.file),
-                              line: unquote(env.line)}
+      %Ecto.Query.DynamicExpr{
+        fun: fn query ->
+          _ = unquote(query)
+
+          {unquote(expr), unquote(params), unquote(Enum.reverse(acc.subqueries)),
+           unquote(aliases)}
+        end,
+        binding: unquote(Macro.escape(binding)),
+        file: unquote(env.file),
+        line: unquote(env.line)
+      }
     end
   end
 
@@ -43,7 +47,9 @@ defmodule Ecto.Query.Builder.Dynamic do
   Expands a dynamic expression for insertion into the given query.
   """
   def fully_expand(query, %{file: file, line: line, binding: binding} = dynamic) do
-    {expr, {binding, params, subqueries, _aliases, _count}} = expand(query, dynamic, {binding, [], [], %{}, 0})
+    {expr, {binding, params, subqueries, _aliases, _count}} =
+      expand(query, dynamic, {binding, [], [], %{}, 0})
+
     {expr, binding, Enum.reverse(params), Enum.reverse(subqueries), file, line}
   end
 
@@ -90,7 +96,9 @@ defmodule Ecto.Query.Builder.Dynamic do
       {:subquery, i}, {binding, params, subqueries, aliases, count} ->
         subquery = Enum.fetch!(dynamic_subqueries, i)
         ix = length(subqueries)
-        {{:subquery, ix}, {binding, [{:subquery, ix} | params], [subquery | subqueries], aliases, count + 1}}
+
+        {{:subquery, ix},
+         {binding, [{:subquery, ix} | params], [subquery | subqueries], aliases, count + 1}}
 
       expr, acc ->
         {expr, acc}

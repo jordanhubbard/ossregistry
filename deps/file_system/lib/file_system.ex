@@ -33,7 +33,7 @@ defmodule FileSystem do
       iex> FileSystem.start_link(backend: :fs_mac, dirs: ["/tmp/fs"], name: :worker)
       iex> FileSystem.subscribe(:worker)
   """
-  @spec start_link(Keyword.t) :: GenServer.on_start()
+  @spec start_link(Keyword.t()) :: GenServer.on_start()
   def start_link(options) do
     FileSystem.Worker.start_link(options)
   end
@@ -45,7 +45,7 @@ defmodule FileSystem do
       {:file_event, worker_pid, {file_path, events}}
       {:file_event, worker_pid, :stop}
   """
-  @spec subscribe(GenServer.server) :: :ok
+  @spec subscribe(GenServer.server()) :: :ok
   def subscribe(pid) do
     GenServer.call(pid, :subscribe)
   end

@@ -115,8 +115,7 @@ defmodule Phoenix.Socket.PoolDrainer do
     end
 
     for {pids, index} <-
-      collection |> Stream.concat() |> Stream.chunk_every(size) |> Stream.with_index(1) do
-
+          collection |> Stream.concat() |> Stream.chunk_every(size) |> Stream.with_index(1) do
       spawn(fn ->
         for pid <- pids do
           send(pid, %Phoenix.Socket.Broadcast{event: "phx_drain"})

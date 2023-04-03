@@ -20,7 +20,7 @@ defmodule Phoenix.LiveView.LiveStream do
       name: name,
       dom_id: dom_id,
       inserts: items_list,
-      deletes: [],
+      deletes: []
     }
   end
 
@@ -49,7 +49,7 @@ defmodule Phoenix.LiveView.LiveStream do
   def insert_item(%LiveStream{} = stream, item, at) do
     item_id = stream.dom_id.(item)
 
-    %LiveStream{stream |inserts: stream.inserts ++ [{item_id, at, item}]}
+    %LiveStream{stream | inserts: stream.inserts ++ [{item_id, at, item}]}
   end
 
   defimpl Enumerable, for: LiveStream do

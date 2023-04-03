@@ -953,7 +953,9 @@ defmodule Phoenix.Component do
     assigns = %{entries: entries, changed: changed, argument: argument}
 
     ~H"""
-    <%= for entry <- @entries do %><%= call_inner_block!(entry, @changed, @argument) %><% end %>
+    <%= for entry <- @entries do %>
+      <%= call_inner_block!(entry, @changed, @argument) %>
+    <% end %>
     """
   end
 
@@ -1919,7 +1921,9 @@ defmodule Phoenix.Component do
 
   def live_title(assigns) do
     ~H"""
-    <title data-prefix={@prefix} data-suffix={@suffix}><%= @prefix %><%= render_slot(@inner_block) %><%= @suffix %></title>
+    <title data-prefix={@prefix} data-suffix={@suffix}>
+      <%= @prefix %><%= render_slot(@inner_block) %><%= @suffix %>
+    </title>
     """
   end
 
@@ -2176,10 +2180,10 @@ defmodule Phoenix.Component do
     ~H"""
     <form {@attrs}>
       <%= if @hidden_method && @hidden_method not in ~w(get post) do %>
-        <input name="_method" type="hidden" hidden value={@hidden_method}>
+        <input name="_method" type="hidden" hidden value={@hidden_method} />
       <% end %>
       <%= if @csrf_token do %>
-        <input name="_csrf_token" type="hidden" hidden value={@csrf_token}>
+        <input name="_csrf_token" type="hidden" hidden value={@csrf_token} />
       <% end %>
       <%= render_slot(@inner_block, @form) %>
     </form>
@@ -2453,7 +2457,9 @@ defmodule Phoenix.Component do
       data-phx-link="redirect"
       data-phx-link-state={if @replace, do: "replace", else: "push"}
       {@rest}
-    ><%= render_slot(@inner_block) %></a>
+    >
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 
@@ -2464,7 +2470,9 @@ defmodule Phoenix.Component do
       data-phx-link="patch"
       data-phx-link-state={if @replace, do: "replace", else: "push"}
       {@rest}
-    ><%= render_slot(@inner_block) %></a>
+    >
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 
@@ -2479,7 +2487,9 @@ defmodule Phoenix.Component do
       data-csrf={if @method != "get", do: csrf_token(@csrf_token, @href)}
       data-to={if @method != "get", do: @href}
       {@rest}
-    ><%= render_slot(@inner_block) %></a>
+    >
+      <%= render_slot(@inner_block) %>
+    </a>
     """
   end
 
@@ -2588,7 +2598,8 @@ defmodule Phoenix.Component do
 
     if assigns.inner_block != [] do
       ~H"""
-      <%= {:safe, [?<, @tag]} %><%= @escaped_attrs %><%= {:safe, [?>]} %><%= render_slot(@inner_block) %><%= {:safe, [?<, ?/, @tag, ?>]} %>
+      <%= {:safe, [?<, @tag]} %><%= @escaped_attrs %><%= {:safe, [?>]} %><%= render_slot(@inner_block) %><%= {:safe,
+       [?<, ?/, @tag, ?>]} %>
       """
     else
       ~H"""
@@ -2722,7 +2733,8 @@ defmodule Phoenix.Component do
       data-phx-entry-ref={@ref}
       data-phx-hook="Phoenix.LiveImgPreview"
       data-phx-update="ignore"
-      {@rest} />
+      {@rest}
+    />
     """
   end
 

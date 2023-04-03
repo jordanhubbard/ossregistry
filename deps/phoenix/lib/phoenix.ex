@@ -62,11 +62,11 @@ defmodule Phoenix do
     configured_lib = Application.get_env(:phoenix, :json_library)
 
     if configured_lib && not Code.ensure_loaded?(configured_lib) do
-      IO.warn """
+      IO.warn("""
       found #{inspect(configured_lib)} in your application configuration
       for Phoenix JSON encoding, but module #{inspect(configured_lib)} is not available.
       Ensure #{inspect(configured_lib)} is listed as a dependency in mix.exs.
-      """
+      """)
     end
   end
 end

@@ -253,7 +253,9 @@ defmodule Phoenix.LiveView.Helpers do
     assigns = %{title: title, prefix: opts[:prefix], suffix: opts[:suffix]}
 
     ~H"""
-    <Phoenix.Component.live_title prefix={@prefix} suffix={@suffix}><%= @title %></Phoenix.Component.live_title>
+    <Phoenix.Component.live_title prefix={@prefix} suffix={@suffix}>
+      <%= @title %>
+    </Phoenix.Component.live_title>
     """
   end
 

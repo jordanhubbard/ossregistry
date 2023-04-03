@@ -468,8 +468,7 @@ defmodule Phoenix.LiveViewTest do
   def __render_component__(endpoint, %{module: component}, assigns, opts) do
     socket = %Socket{endpoint: endpoint, router: opts[:router]}
 
-    assigns =
-      Map.new(assigns)
+    assigns = Map.new(assigns)
 
     # TODO: Make the ID required once we support only stateful module components as live_component
     mount_assigns = if assigns[:id], do: %{myself: %Phoenix.LiveComponent.CID{cid: -1}}, else: %{}

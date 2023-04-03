@@ -170,7 +170,14 @@ defmodule Phoenix.LiveDashboard.TableComponent do
           <form phx-change="search" phx-submit="search" phx-target={@myself} class="form-inline">
             <div class="form-row align-items-center">
               <div class="col-auto">
-                <input type="search" name="search" class="form-control form-control-sm" value={@table_params.search} placeholder="Search" phx-debounce="300">
+                <input
+                  type="search"
+                  name="search"
+                  class="form-control form-control-sm"
+                  value={@table_params.search}
+                  placeholder="Search"
+                  phx-debounce="300"
+                />
               </div>
             </div>
           </form>

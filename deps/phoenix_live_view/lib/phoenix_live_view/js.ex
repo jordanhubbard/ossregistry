@@ -620,6 +620,7 @@ defmodule Phoenix.LiveView.JS do
   def focus(), do: focus(%JS{}, [])
   def focus(%JS{} = js), do: focus(js, [])
   def focus(opts) when is_list(opts), do: focus(%JS{}, opts)
+
   def focus(%JS{} = js, opts) when is_list(opts) do
     opts = validate_keys(opts, :focus, [:to])
     put_op(js, "focus", %{to: opts[:to]})
@@ -640,6 +641,7 @@ defmodule Phoenix.LiveView.JS do
   def focus_first(), do: focus_first(%JS{}, [])
   def focus_first(%JS{} = js), do: focus_first(js, [])
   def focus_first(opts) when is_list(opts), do: focus_first(%JS{}, opts)
+
   def focus_first(%JS{} = js, opts) when is_list(opts) do
     opts = validate_keys(opts, :focus_first, [:to])
     put_op(js, "focus_first", %{to: opts[:to]})
@@ -661,6 +663,7 @@ defmodule Phoenix.LiveView.JS do
   def push_focus(), do: push_focus(%JS{}, [])
   def push_focus(%JS{} = js), do: push_focus(js, [])
   def push_focus(opts) when is_list(opts), do: push_focus(%JS{}, opts)
+
   def push_focus(%JS{} = js, opts) when is_list(opts) do
     opts = validate_keys(opts, :push_focus, [:to])
     put_op(js, "push_focus", %{to: opts[:to]})
@@ -674,6 +677,7 @@ defmodule Phoenix.LiveView.JS do
       JS.pop_focus()
   """
   def pop_focus(), do: pop_focus(%JS{})
+
   def pop_focus(%JS{} = js) do
     put_op(js, "pop_focus", %{})
   end
@@ -692,12 +696,15 @@ defmodule Phoenix.LiveView.JS do
   def navigate(href) when is_binary(href) do
     navigate(%JS{}, href, [])
   end
+
   def navigate(href, opts) when is_binary(href) and is_list(opts) do
     navigate(%JS{}, href, opts)
   end
+
   def navigate(%JS{} = js, href) when is_binary(href) do
     navigate(js, href, [])
   end
+
   def navigate(%JS{} = js, href, opts) when is_binary(href) and is_list(opts) do
     opts = validate_keys(opts, :navigate, [:replace])
     put_op(js, "navigate", %{href: href, replace: !!opts[:replace]})
@@ -717,12 +724,15 @@ defmodule Phoenix.LiveView.JS do
   def patch(href) when is_binary(href) do
     patch(%JS{}, href, [])
   end
+
   def patch(href, opts) when is_binary(href) and is_list(opts) do
     patch(%JS{}, href, opts)
   end
+
   def patch(%JS{} = js, href) when is_binary(href) do
     patch(js, href, [])
   end
+
   def patch(%JS{} = js, href, opts) when is_binary(href) and is_list(opts) do
     opts = validate_keys(opts, :patch, [:replace])
     put_op(js, "patch", %{href: href, replace: !!opts[:replace]})

@@ -270,7 +270,6 @@ defmodule Ecto.Adapters.Tds do
     end
   end
 
-
   @impl true
   def supports_ddl_transaction? do
     true
@@ -284,12 +283,19 @@ defmodule Ecto.Adapters.Tds do
       Ecto.Adapters.SQL.raise_migration_pool_size_error()
     end
 
-    opts = Keyword.merge(opts, [timeout: :infinity, telemetry_options: [schema_migration: true]])
+    opts = Keyword.merge(opts, timeout: :infinity, telemetry_options: [schema_migration: true])
 
     {:ok, result} =
       transaction(meta, opts, fn ->
         lock_name = "'ecto_#{inspect(repo)}'"
-        Ecto.Adapters.SQL.query!(meta, "sp_getapplock @Resource = #{lock_name}, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = -1", [], opts)
+
+        Ecto.Adapters.SQL.query!(
+          meta,
+          "sp_getapplock @Resource = #{lock_name}, @LockMode = 'Exclusive', @LockOwner = 'Transaction', @LockTimeout = -1",
+          [],
+          opts
+        )
+
         fun.()
       end)
 

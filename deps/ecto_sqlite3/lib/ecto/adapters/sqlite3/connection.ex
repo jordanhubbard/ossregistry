@@ -875,8 +875,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   def cte(
-        %{with_ctes: %WithExpr{recursive: recursive, queries: [_ | _] = queries}} =
-          query,
+        %{with_ctes: %WithExpr{recursive: recursive, queries: [_ | _] = queries}} = query,
         sources
       ) do
     recursive_opt = if recursive, do: "RECURSIVE ", else: ""

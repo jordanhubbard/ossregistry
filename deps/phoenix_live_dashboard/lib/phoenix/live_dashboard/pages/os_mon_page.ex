@@ -181,7 +181,7 @@ defmodule Phoenix.LiveDashboard.OSMonPage do
     <p>The load panes show the CPU demand in the last 1, 5 and 15 minutes over all cores.</p>
 
     <%= if @cpu_count > 0 do %>
-        <p>The avg panes show the same values averaged across all cores.</p>
+      <p>The avg panes show the same values averaged across all cores.</p>
     <% end %>
     """
   end

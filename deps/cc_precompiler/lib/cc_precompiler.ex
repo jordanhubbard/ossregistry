@@ -56,13 +56,18 @@ defmodule CCPrecompiler do
   defp default_compilers, do: @default_compilers
   defp user_config, do: Mix.Project.config()[:cc_precompiler] || default_compilers()
   defp compilers, do: Access.get(user_config(), :compilers, default_compilers())
-  defp compilers_current_os, do: {Access.get(compilers(), :os.type(), %{}), Access.get(default_compilers(), :os.type(), %{})}
+
+  defp compilers_current_os,
+    do:
+      {Access.get(compilers(), :os.type(), %{}), Access.get(default_compilers(), :os.type(), %{})}
+
   defp compilers_current_os_with_override do
     {compiler_map1, compiler_map2} = compilers_current_os()
 
     if Map.has_key?(compiler_map1, :include_default_ones) do
       include_default_ones = Map.get(compiler_map1, :include_default_ones, false)
       compiler_map1 = Map.delete(compiler_map1, :include_default_ones)
+
       if include_default_ones == true do
         Map.merge(compiler_map1, compiler_map2, fn _, _, user_override -> user_override end)
       else
@@ -72,6 +77,7 @@ defmodule CCPrecompiler do
       compiler_map1
     end
   end
+
   defp only_listed_targets, do: Access.get(user_config(), :only_listed_targets, false)
   defp allow_missing_compiler, do: Access.get(user_config(), :allow_missing_compiler, false)
 

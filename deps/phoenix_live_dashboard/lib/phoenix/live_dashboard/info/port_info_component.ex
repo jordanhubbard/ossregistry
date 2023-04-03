@@ -20,13 +20,34 @@ defmodule Phoenix.LiveDashboard.PortInfoComponent do
       <%= if @alive do %>
         <table class="table table-hover tabular-info-table">
           <tbody>
-            <tr><td class="border-top-0">Port Name</td><td class="border-top-0"><pre><%= @name %></pre></td></tr>
-            <tr><td>Id</td><td><pre><%= @id %></pre></td></tr>
-            <tr><td>Connected</td><td><pre><%= @connected %></pre></td></tr>
-            <tr><td>Input</td><td><pre><%= format_bytes(@input) %></pre></td></tr>
-            <tr><td>Output</td><td><pre><%= format_bytes(@output) %></pre></td></tr>
-            <tr><td>OS pid</td><td><pre><%= @os_pid %></pre></td></tr>
-            <tr><td>Links</td><td><pre><.info links={@links} /></pre></td></tr>
+            <tr>
+              <td class="border-top-0">Port Name</td>
+              <td class="border-top-0"><pre><%= @name %></pre></td>
+            </tr>
+            <tr>
+              <td>Id</td>
+              <td><pre><%= @id %></pre></td>
+            </tr>
+            <tr>
+              <td>Connected</td>
+              <td><pre><%= @connected %></pre></td>
+            </tr>
+            <tr>
+              <td>Input</td>
+              <td><pre><%= format_bytes(@input) %></pre></td>
+            </tr>
+            <tr>
+              <td>Output</td>
+              <td><pre><%= format_bytes(@output) %></pre></td>
+            </tr>
+            <tr>
+              <td>OS pid</td>
+              <td><pre><%= @os_pid %></pre></td>
+            </tr>
+            <tr>
+              <td>Links</td>
+              <td><pre><.info links={@links} /></pre></td>
+            </tr>
           </tbody>
         </table>
       <% else %>
@@ -72,7 +93,9 @@ defmodule Phoenix.LiveDashboard.PortInfoComponent do
 
   defp info(%{links: links} = assigns) when is_list(links) do
     ~H"""
-    <%= for info <- @links do %><%= info %><% end %>
+    <%= for info <- @links do %>
+      <%= info %>
+    <% end %>
     """
   end
 

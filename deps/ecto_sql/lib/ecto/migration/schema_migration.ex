@@ -37,7 +37,9 @@ defmodule Ecto.Migration.SchemaMigration do
 
   def versions(repo, config, prefix) do
     {repo, source} = get_repo_and_source(repo, config)
-    {repo, from(m in source, select: type(m.version, :integer)), [prefix: prefix] ++ @default_opts}
+
+    {repo, from(m in source, select: type(m.version, :integer)),
+     [prefix: prefix] ++ @default_opts}
   end
 
   def up(repo, config, version, opts) do
@@ -63,7 +65,8 @@ defmodule Ecto.Migration.SchemaMigration do
   defp default_opts(opts) do
     Keyword.merge(
       @default_opts,
-      [prefix: opts[:prefix], log: Keyword.get(opts, :log_migrator_sql, false)]
+      prefix: opts[:prefix],
+      log: Keyword.get(opts, :log_migrator_sql, false)
     )
   end
 end
